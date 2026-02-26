@@ -4,20 +4,21 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 
 	app "usermanagement/internal/application/user"
 	"usermanagement/internal/domain/user"
-	"usermanagement/internal/infrastructure/logger"
+	"usermanagement/internal/infra/logger"
 )
 
 // UserHandler handles HTTP requests for user management.
 type UserHandler struct {
 	createUC *app.CreateUserUseCase
 	getUC    *app.GetUserUseCase
-	listUC   *app.ListUsersUseCase
 	updateUC *app.UpdateUserUseCase
 	deleteUC *app.DeleteUserUseCase
 	logger   *logger.Logger
@@ -27,7 +28,6 @@ type UserHandler struct {
 func NewUserHandler(
 	createUC *app.CreateUserUseCase,
 	getUC *app.GetUserUseCase,
-	listUC *app.ListUsersUseCase,
 	updateUC *app.UpdateUserUseCase,
 	deleteUC *app.DeleteUserUseCase,
 	logger *logger.Logger,
@@ -35,7 +35,6 @@ func NewUserHandler(
 	return &UserHandler{
 		createUC: createUC,
 		getUC:    getUC,
-		listUC:   listUC,
 		updateUC: updateUC,
 		deleteUC: deleteUC,
 		logger:   logger,
@@ -77,24 +76,6 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, output)
 }
 
-// List handles GET /users with pagination.
-func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
-	limit, offset := parsePagination(r)
-
-	input := app.PaginationInput{
-		Limit:  limit,
-		Offset: offset,
-	}
-
-	output, err := h.listUC.Execute(r.Context(), input)
-	if err != nil {
-		h.logger.Error("failed to list users", zap.Error(err))
-		respondError(w, http.StatusInternalServerError, "internal server error")
-		return
-	}
-
-	respondJSON(w, http.StatusOK, output)
-}
 
 // Update handles PUT /users/{id}.
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {

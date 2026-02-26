@@ -3,18 +3,22 @@ package main
 import (
 	"context"
 	"net/http"
+	stdhttp "net/http" // alias standard library
+
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 
 	"usermanagement/internal/application/user"
-	"usermanagement/internal/delivery/http"
 	"usermanagement/internal/infra/config"
 	"usermanagement/internal/infra/logger"
 	"usermanagement/internal/infra/persistence/postgres"
+
+	deliveryhttp "usermanagement/internal/delivery/http" // alias your package
 )
 
 func main() {
@@ -59,16 +63,15 @@ func main() {
 	// Application (Use Cases)
 	createUC := user.NewCreateUserUseCase(userRepo)
 	getUC := user.NewGetUserUseCase(userRepo)
-	listUC := user.NewListUsersUseCase(userRepo)
 	updateUC := user.NewUpdateUserUseCase(userRepo)
 	deleteUC := user.NewDeleteUserUseCase(userRepo)
 
 	// Delivery
-	handler := http.NewUserHandler(createUC, getUC, listUC, updateUC, deleteUC, log)
-	router := http.NewRouter(handler, log)
+	handler := deliveryhttp.NewUserHandler(createUC, getUC, updateUC, deleteUC, log)
+	router := deliveryhttp.NewRouter(handler, log)
 
 	// HTTP Server
-	srv := &http.Server{
+	srv := &stdhttp.Server{
 		Addr:         ":" + cfg.HTTPPort,
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,

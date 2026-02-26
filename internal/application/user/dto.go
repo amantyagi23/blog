@@ -2,6 +2,7 @@ package user
 
 import (
 	"time"
+	"usermanagement/internal/domain/user"
 
 	"github.com/google/uuid"
 )
@@ -32,7 +33,7 @@ type UserOutput struct {
 }
 
 // MapFromDomain converts domain entity to output DTO.
-func MapFromDomain(u *domain.User) UserOutput {
+func MapFromDomain(u * user.User) UserOutput {
 	return UserOutput{
 		ID:        u.ID(),
 		Name:      u.Name(),

@@ -1,11 +1,13 @@
 package http
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"usermanagement/internal/infrastructure/logger"
+	"usermanagement/internal/infra/logger"
 )
 
 // NewRouter creates and configures the HTTP router.
@@ -36,7 +38,6 @@ func NewRouter(handler *UserHandler, logger *logger.Logger) *chi.Mux {
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/", handler.Create)
-			r.Get("/", handler.List)
 			r.Get("/{id}", handler.GetByID)
 			r.Put("/{id}", handler.Update)
 			r.Delete("/{id}", handler.Delete)

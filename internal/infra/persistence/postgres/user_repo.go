@@ -4,14 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 
 	"usermanagement/internal/domain/user"
-	"usermanagement/internal/infrastructure/logger"
+	"usermanagement/internal/infra/logger"
 )
 
 // UserRepository implements domain.UserRepository using PostgreSQL.

@@ -33,14 +33,14 @@ func Load() (*Config, error) {
 
 	return &Config{
 		Environment: getEnv("ENV", "development"),
-		HTTPPort:    getEnv("HTTP_PORT", "8080"),
+		HTTPPort:    getEnv("HTTP_PORT", "5005"),
 		LogLevel:    getEnv("LOG_LEVEL", "info"),
 		Database: DatabaseConfig{
 			Host:     getEnv("DB_HOST", "localhost"),
 			Port:     port,
 			User:     getEnv("DB_USER", "postgres"),
-			Password: getEnv("DB_PASSWORD", "postgres"),
-			DBName:   getEnv("DB_NAME", "userdb"),
+			Password: getEnv("DB_PASSWORD", "12345678"),
+			DBName:   getEnv("DB_NAME", "blog"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 	}, nil

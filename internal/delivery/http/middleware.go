@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 
-	"usermanagement/internal/infrastructure/logger"
+	"usermanagement/internal/infra/logger"
 )
 
 // LoggingMiddleware logs HTTP requests.
